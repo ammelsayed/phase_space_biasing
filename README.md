@@ -208,6 +208,99 @@ To disable: `set bias_module None`.
    the unweighting efficiency printed by MG5aMC, as a function of
    `xsec_flat_bias_exponent`.
 
+## Results of the biasing study
+
+The study was run on V→leptons samples only (the `add process … j` lines
+were dropped, so there are no final-state jets): `pp → Z → τ⁺τ⁻` and
+`pp → W → τν` at 13.6 TeV, 100 000 unweighted events each, all with the
+same RNG seed (`iseed 0` → MG5aMC v3.7.2 used seed offset 21 for every
+run) and `impact_xsec = .False.`. Since there are no jets, `ptj_bias`,
+`ht_bias` and `ptl1_met_ht_bias` were **not** run, and the Z sample does
+not use any MET-containing module. The tested matrix:
+
+| Sample | Runs |
+|---|---|
+| Z | reference, `ptl1_bias` |
+| W | reference, `ptl1_bias`, `met_bias`, `ptl1_met_bias` (default 4+4), `ptl1_met_bias` with `bias_parameters` powers 2+2 |
+
+Reproduce with `study/run_study.sh` (uses `/data/ammelsayed/runmg5.sh`);
+`study/analyze_lhe.py` builds the plots in `study/plots/` and the numbers
+below. MadAnalysis5 reports generated during the runs are collected in
+`study/ma5/`.
+
+Reported cross sections (with `impact_xsec = .False.` the bias must not
+change the physics):
+
+| Run | σ [pb] |
+|---|---|
+| Z reference | 0.812 ± 0.0007 |
+| Z `ptl1_bias` | 0.8106 ± 0 |
+| W reference | 2.301 ± 0.0027 |
+| W `ptl1_bias` | 2.312 ± 0 |
+| W `met_bias` | 2.312 ± 0 |
+| W `ptl1_met_bias` (4+4) | **1.088 ± 0 (broken!)** |
+| W `ptl1_met_bias` (2+2) | 2.312 ± 0 |
+
+Event counts N and per-bin relative statistical uncertainty
+δ = √(Σw²)/Σw above pT thresholds (format `N / δ / gain = δ_ref/δ`):
+
+**Z sample, ptl1** (identical gains hold for ptl2 and HT, see below):
+
+| threshold | reference | `ptl1_bias` |
+|---|---|---|
+| 300 GeV | 9 046 / 0.011 / – | 72 754 / 0.006 / **1.7×** |
+| 500 GeV | 1 068 / 0.031 / – | 45 005 / 0.007 / **4.6×** |
+| 800 GeV | 109 / 0.096 / – | 21 182 / 0.009 / **11.2×** |
+
+**W sample, ptl1 (and MET, HT — degenerate, see below):**
+
+| threshold | reference | `ptl1_bias` = `met_bias` = `ptl1_met_bias` (2+2) | `ptl1_met_bias` (4+4) |
+|---|---|---|---|
+| 300 GeV | 8 260 / 0.011 / – | 71 347 / 0.006 / **1.8×** | 99 903 / 0.050 / 0.2× |
+| 500 GeV | 1 025 / 0.031 / – | 44 612 / 0.007 / **4.7×** | 98 959 / 0.019 / 1.7× |
+| 800 GeV | 116 / 0.093 / – | 21 564 / 0.008 / **11.0×** | 93 280 / 0.010 / 9.7× |
+
+Plots (top: physical weighted distributions — closure; middle: unweighted
+population; bottom: δ_biased/δ_ref): [z_ptl1](study/plots/z_ptl1.png),
+[z_ptl2](study/plots/z_ptl2.png), [z_ht](study/plots/z_ht.png),
+[w_ptl1](study/plots/w_ptl1.png), [w_met](study/plots/w_met.png),
+[w_ht](study/plots/w_ht.png).
+
+Findings:
+
+1. **Closure works.** With `impact_xsec = .False.` the weighted
+   distributions of every healthy biased sample reproduce the reference
+   over five decades (top panels): MG5aMC v3.7.2 stores the physical
+   per-event weight in the LHE weight column (no `<rwgt>` block is
+   written), so biased samples are directly usable in analyses.
+2. **The tails gain a lot.** Above 300/500/800 GeV the same 100k-event
+   budget yields respectively ~2×/~5×/~11× smaller statistical
+   uncertainties, while the lowest bins lose at most a factor ~2–3.
+3. **At LO without jets all key observables are degenerate.** The W is
+   produced with zero transverse momentum, so `ptl1 = ptl2 = MET = HT`
+   (Z: `ptl1 = ptl2 = HT/2`) event by event. Consequently `met_bias` is
+   *numerically identical* to `ptl1_bias` for the W (the two runs produced
+   bit-identical event files), and biasing the single variable ptl1
+   improves **all** of ptl1, ptl2, MET and HT simultaneously.
+4. **Over-biasing breaks the generation.** The combined `ptl1_met_bias`
+   with default parameters (powers 4×4 = effective power 8 for the W)
+   converged to a cross section 53% too low (1.088 instead of 2.301 pb,
+   reported as "± 0" and "stable") and its weighted distribution does not
+   close: the integration/unweighting cannot handle such an aggressive
+   bias. With powers 2+2 (effective power 4) the same module is perfectly
+   healthy. Practical rule: keep the *effective total* power of the bias
+   ≈ 4 or below, and always check the reported σ against an unbiased run.
+
+**Verdict** — for making sure there is enough statistics in *almost all*
+distributions of these V→leptons samples, **`ptl1_bias` with its default
+parameters (target 300 GeV, power 4) is the best module** for both the Z
+and the W sample: it is the only knob needed at LO (all key observables
+are degenerate with ptl1), it improves every tail by 2–11× at fixed event
+budget, and it preserves the total cross section and the physical
+distributions. Combined modules (`ptl1_met_bias`) only become useful when
+the observables decouple — i.e. once jets/recoil are present — and must
+then be run with moderate exponents (effective total power ≲ 4).
+
 ## References
 
 * [LOEventGenerationBias](https://cp3.irmp.ucl.ac.be/projects/madgraph/wiki/LOEventGenerationBias)
