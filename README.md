@@ -52,7 +52,7 @@ Settings (as requested for this study):
 | Detector | `detector = OFF` (no Delphes) |
 | Analysis | `analysis = MadAnalysis5` |
 | MadSpin / reweight | OFF |
-| Merging | `ickkw 1` (MLM), `xqcut 30.0`, `maxjetflavor 5` |
+| Merging | MLM settings (`ickkw`, `xqcut`, `maxjetflavor`) commented out — no matching |
 | Cuts | `ptj 30`, `etaj 2.5`, `ptl1min 150`, `ptl2min 50` / `misset 50` (W), `etal 2.5` |
 | PDF | `lhapdf`, `lhaid 331900` |
 

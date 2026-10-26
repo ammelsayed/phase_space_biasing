@@ -17,9 +17,6 @@ generate p p > l+ l- QCD=0 QED=2 @0
 add process p p > l+ l- j QCD=1 QED=2 @1
 add process p p > l+ l- j j QCD=2 QED=2 @2
 output z012j_MLM --f
-shell mkdir -p ./diagrams/z012j_MLM
-display diagrams ./diagrams/z012j_MLM
-shell gs -dBATCH -dNOPAUSE -q -sDEVICE=pdfwrite -sOutputFile=./diagrams/z012j_MLM/all_diagrams.pdf $(find ./diagrams/z012j_MLM -name "*.eps" | sort)
 launch z012j_MLM
 shower = OFF
 detector = OFF
@@ -33,9 +30,9 @@ set ebeam 6800
 # ./Cards_edited/delphes_card_ATLAS_FatJetPTMin50.tcl
 set pdlabel lhapdf
 set lhaid 331900
-set ickkw 1
-set xqcut 30.0
-set maxjetflavor 5
+# set ickkw 1
+# set xqcut 30.0
+# set maxjetflavor 5
 set use_syst False
 set cut_decays True
 set ptj 30.0
