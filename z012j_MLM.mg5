@@ -1,0 +1,50 @@
+set automatic_html_opening False --no_save
+set notification_center False --no_save
+set zerowidth_tchannel False --no_save
+set nb_core 40 --no_save
+set nb_core_pythia8 40 --no_save
+set nb_core_delphes 40 --no_save
+import model sm
+define p = g u c d s b u~ c~ d~ s~ b~
+define j = g u c d s b u~ c~ d~ s~ b~
+define l+ = e+ mu+ ta+
+define l- = e- mu- ta-
+define vl = ve vm vt
+define vl~ = ve~ vm~ vt~
+define lep = l+ l-
+define nu = vl vl~
+generate p p > l+ l- QCD=0 QED=2 @0
+add process p p > l+ l- j QCD=1 QED=2 @1
+add process p p > l+ l- j j QCD=2 QED=2 @2
+output z012j_MLM --f
+shell mkdir -p ./diagrams/z012j_MLM
+display diagrams ./diagrams/z012j_MLM
+shell gs -dBATCH -dNOPAUSE -q -sDEVICE=pdfwrite -sOutputFile=./diagrams/z012j_MLM/all_diagrams.pdf $(find ./diagrams/z012j_MLM -name "*.eps" | sort)
+launch z012j_MLM
+shower = OFF
+detector = OFF
+analysis = MadAnalysis5
+madspin = OFF
+reweight = OFF
+done
+set ebeam 6800
+# shower and detector are OFF: pythia8/delphes card lines commented out
+# ./Cards_edited/pythia8_card_TuneA14.dat
+# ./Cards_edited/delphes_card_ATLAS_FatJetPTMin50.tcl
+set pdlabel lhapdf
+set lhaid 331900
+set ickkw 1
+set xqcut 30.0
+set maxjetflavor 5
+set use_syst False
+set cut_decays True
+set ptj 30.0
+set etaj 2.5
+set ptl1min 150.0
+set ptl2min 50.0
+set etal 2.5
+set sde_strategy 2
+set hard_survey 2
+set iseed 0
+set nevents 100_000
+done
