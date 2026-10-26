@@ -1,0 +1,9 @@
+# MG5aMC run artifacts: generated process directories and plots
+# (only the study/ results are committed)
+z012j_MLM/
+w012j_MLM/
+diagrams/
+MA5*/
+madanalysis*/
+runs/
+*.log

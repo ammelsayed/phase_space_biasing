@@ -24,6 +24,7 @@ phase_space_biasing/
     ├── ptl1_bias/                 # bias on the pt of the leading charged lepton
     ├── met_bias/                  # bias on the missing transverse energy
     ├── ht_bias/                   # bias on HT (scalar sum of visible pT)
+    ├── ptl1_met_bias/             # combined bias: ptl1 × MET (no HT term)
     ├── ptl1_met_ht_bias/          # combined bias: ptl1 × MET × HT
     └── xsec_flat_bias/            # (experimental) bias on the cross section itself
 ```
@@ -136,7 +137,8 @@ gets if you don't override `bias_parameters`.
 | `ptl1_bias` | pt of the hardest charged lepton (e±, μ±, τ±) | `ptl1_bias_target_ptl1 300`, `ptl1_bias_enhancement_power 4` |
 | `met_bias` | MET = \|Σ pT of invisible particles (neutrinos)\| | `met_bias_target_met 300`, `met_bias_enhancement_power 4` |
 | `ht_bias` | HT = scalar Σ pT of all visible particles | `ht_bias_target_ht 1000`, `ht_bias_enhancement_power 4` |
-| `ptl1_met_ht_bias` | product of the three biases above | all six parameters above |
+| `ptl1_met_bias` | product of the ptl1 and MET biases above (no HT term) | all four ptl1/met parameters above |
+| `ptl1_met_ht_bias` | product of the ptl1, MET and HT biases above | all six parameters above |
 | `xsec_flat_bias` | (experimental) see below | `xsec_flat_bias_exponent 1.0`, `xsec_flat_bias_reference_weight 1.0` |
 
 ### xsec_flat_bias — biasing the cross section directly

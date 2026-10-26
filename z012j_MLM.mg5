@@ -14,8 +14,6 @@ define vl~ = ve~ vm~ vt~
 define lep = l+ l-
 define nu = vl vl~
 generate p p > l+ l- QCD=0 QED=2 @0
-add process p p > l+ l- j QCD=1 QED=2 @1
-add process p p > l+ l- j j QCD=2 QED=2 @2
 output z012j_MLM --f
 launch z012j_MLM
 shower = OFF
