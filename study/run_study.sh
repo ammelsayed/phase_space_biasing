@@ -7,8 +7,8 @@
 # Module matrix (ptj_bias/ht_bias/ptl1_met_ht_bias are not run: the study uses
 # V->leptons only, no final-state jets; Z has no MET so no MET-containing
 # module is run on Z):
-#   Z: reference, ptl1_bias
-#   W: reference, ptl1_bias, met_bias, ptl1_met_bias
+#   Z: reference, ptl1_bias, xsec_flat_bias
+#   W: reference, ptl1_bias, met_bias, ptl1_met_bias, xsec_flat_bias
 #
 # Usage: study/run_study.sh     (run from anywhere; paths are resolved from it)
 
@@ -52,11 +52,13 @@ run_one () {  # $1 = base script, $2 = module (or None), $3 = tag
   tail -3 "$RUNS/LogFiles/${tag}.log"
 }
 
-run_one z012j_MLM.mg5 None          z012j_ref
-run_one z012j_MLM.mg5 ptl1_bias     z012j_ptl1
-run_one w012j_MLM.mg5 None          w012j_ref
-run_one w012j_MLM.mg5 ptl1_bias     w012j_ptl1
-run_one w012j_MLM.mg5 met_bias      w012j_met
-run_one w012j_MLM.mg5 ptl1_met_bias w012j_ptl1_met
+run_one z012j_MLM.mg5 None           z012j_ref
+run_one z012j_MLM.mg5 ptl1_bias      z012j_ptl1
+run_one z012j_MLM.mg5 xsec_flat_bias z012j_xsecflat
+run_one w012j_MLM.mg5 None           w012j_ref
+run_one w012j_MLM.mg5 ptl1_bias      w012j_ptl1
+run_one w012j_MLM.mg5 met_bias       w012j_met
+run_one w012j_MLM.mg5 ptl1_met_bias  w012j_ptl1_met
+run_one w012j_MLM.mg5 xsec_flat_bias w012j_xsecflat
 
 echo "ALL_RUNS_DONE"

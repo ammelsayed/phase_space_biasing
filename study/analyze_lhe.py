@@ -30,8 +30,9 @@ INVIS = {12, 14, 16}
 SAMPLES = {
     "z": {
         "proc": "z012j_MLM",
-        "tags": ["z012j_ref", "z012j_ptl1"],
-        "labels": {"z012j_ref": "no bias", "z012j_ptl1": "ptl1_bias"},
+        "tags": ["z012j_ref", "z012j_ptl1", "z012j_xsecflat"],
+        "labels": {"z012j_ref": "no bias", "z012j_ptl1": "ptl1_bias",
+                   "z012j_xsecflat": "xsec_flat_bias (exp 1)"},
         "obs": ["ptl1", "ptl2", "ht"],
         "bins": {"ptl1": np.arange(150, 1151, 20.0),
                  "ptl2": np.arange(50, 851, 20.0),
@@ -43,11 +44,12 @@ SAMPLES = {
     "w": {
         "proc": "w012j_MLM",
         "tags": ["w012j_ref", "w012j_ptl1", "w012j_met", "w012j_ptl1_met",
-                 "w012j_ptl1_met_soft"],
+                 "w012j_ptl1_met_soft", "w012j_xsecflat"],
         "labels": {"w012j_ref": "no bias", "w012j_ptl1": "ptl1_bias",
                    "w012j_met": "met_bias",
                    "w012j_ptl1_met": "ptl1_met_bias (4+4)",
-                   "w012j_ptl1_met_soft": "ptl1_met_bias (2+2)"},
+                   "w012j_ptl1_met_soft": "ptl1_met_bias (2+2)",
+                   "w012j_xsecflat": "xsec_flat_bias (exp 1)"},
         "obs": ["ptl1", "met", "ht"],
         "bins": {"ptl1": np.arange(150, 1151, 20.0),
                  "ptl2": np.arange(50, 851, 20.0),
@@ -58,7 +60,7 @@ SAMPLES = {
     },
 }
 
-COLORS = ["k", "tab:blue", "tab:green", "tab:red", "tab:purple"]
+COLORS = ["k", "tab:blue", "tab:green", "tab:red", "tab:purple", "tab:orange"]
 
 
 def read_lhe(path):

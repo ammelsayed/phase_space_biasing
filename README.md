@@ -220,8 +220,8 @@ not use any MET-containing module. The tested matrix:
 
 | Sample | Runs |
 |---|---|
-| Z | reference, `ptl1_bias` |
-| W | reference, `ptl1_bias`, `met_bias`, `ptl1_met_bias` (default 4+4), `ptl1_met_bias` with `bias_parameters` powers 2+2 |
+| Z | reference, `ptl1_bias`, `xsec_flat_bias` |
+| W | reference, `ptl1_bias`, `met_bias`, `ptl1_met_bias` (default 4+4), `ptl1_met_bias` with `bias_parameters` powers 2+2, `xsec_flat_bias` |
 
 Reproduce with `study/run_study.sh` (uses `/data/ammelsayed/runmg5.sh`);
 `study/analyze_lhe.py` builds the plots in `study/plots/` and the numbers
@@ -235,30 +235,32 @@ change the physics):
 |---|---|
 | Z reference | 0.812 ± 0.0007 |
 | Z `ptl1_bias` | 0.8106 ± 0 |
+| Z `xsec_flat_bias` | 0.8152 ± 0 |
 | W reference | 2.301 ± 0.0027 |
 | W `ptl1_bias` | 2.312 ± 0 |
 | W `met_bias` | 2.312 ± 0 |
 | W `ptl1_met_bias` (4+4) | **1.088 ± 0 (broken!)** |
 | W `ptl1_met_bias` (2+2) | 2.312 ± 0 |
+| W `xsec_flat_bias` | 2.295 ± 0 |
 
 Event counts N and per-bin relative statistical uncertainty
 δ = √(Σw²)/Σw above pT thresholds (format `N / δ / gain = δ_ref/δ`):
 
 **Z sample, ptl1** (identical gains hold for ptl2 and HT, see below):
 
-| threshold | reference | `ptl1_bias` |
-|---|---|---|
-| 300 GeV | 9 046 / 0.011 / – | 72 754 / 0.006 / **1.7×** |
-| 500 GeV | 1 068 / 0.031 / – | 45 005 / 0.007 / **4.6×** |
-| 800 GeV | 109 / 0.096 / – | 21 182 / 0.009 / **11.2×** |
+| threshold | reference | `ptl1_bias` | `xsec_flat_bias` |
+|---|---|---|---|
+| 300 GeV | 9 046 / 0.011 / – | 72 754 / 0.006 / **1.7×** | 8 986 / 0.013 / 0.8× |
+| 500 GeV | 1 068 / 0.031 / – | 45 005 / 0.007 / **4.6×** | 1 100 / 0.036 / 0.9× |
+| 800 GeV | 109 / 0.096 / – | 21 182 / 0.009 / **11.2×** | 107 / 0.116 / 0.8× |
 
 **W sample, ptl1 (and MET, HT — degenerate, see below):**
 
-| threshold | reference | `ptl1_bias` = `met_bias` = `ptl1_met_bias` (2+2) | `ptl1_met_bias` (4+4) |
-|---|---|---|---|
-| 300 GeV | 8 260 / 0.011 / – | 71 347 / 0.006 / **1.8×** | 99 903 / 0.050 / 0.2× |
-| 500 GeV | 1 025 / 0.031 / – | 44 612 / 0.007 / **4.7×** | 98 959 / 0.019 / 1.7× |
-| 800 GeV | 116 / 0.093 / – | 21 564 / 0.008 / **11.0×** | 93 280 / 0.010 / 9.7× |
+| threshold | reference | `ptl1_bias` = `met_bias` = `ptl1_met_bias` (2+2) | `ptl1_met_bias` (4+4) | `xsec_flat_bias` |
+|---|---|---|---|---|
+| 300 GeV | 8 260 / 0.011 / – | 71 347 / 0.006 / **1.8×** | 99 903 / 0.050 / 0.2× | 9 089 / 0.013 / 0.9× |
+| 500 GeV | 1 025 / 0.031 / – | 44 612 / 0.007 / **4.7×** | 98 959 / 0.019 / 1.7× | 1 159 / 0.035 / 0.9× |
+| 800 GeV | 116 / 0.093 / – | 21 564 / 0.008 / **11.0×** | 93 280 / 0.010 / 9.7× | 132 / 0.103 / 0.9× |
 
 Plots (top: physical weighted distributions — closure; middle: unweighted
 population; bottom: δ_biased/δ_ref): [z_ptl1](study/plots/z_ptl1.png),
@@ -290,6 +292,19 @@ Findings:
    bias. With powers 2+2 (effective power 4) the same module is perfectly
    healthy. Practical rule: keep the *effective total* power of the bias
    ≈ 4 or below, and always check the reported σ against an unbiased run.
+5. **Biasing the cross section directly is a no-op for the event
+   population.** `xsec_flat_bias` (bias ∝ 1/|original_weight|, exponent 1)
+   is the *healthiest* run of the study: the flattened total weight makes
+   MG5aMC's integration trivially stable — σ within 0.3–0.6% of the
+   reference on both samples, ~100% unweighting efficiency (fastest runs,
+   ~1–2 min) — but its unweighted population is statistically
+   indistinguishable from the reference (gains 0.8–0.9× in every tail,
+   e.g. 107 events above ptl1 = 800 GeV vs 109 for the reference). The
+   1/|w| factor cancels the importance sampling that MG5aMC's VEGAS
+   integration has already built in, so no region of phase space ends up
+   oversampled. To actually move statistics between regions one must bias
+   an observable that compensates the *physical* falloff (as `ptl1_bias`
+   does), not the event weight itself.
 
 **Verdict** — for making sure there is enough statistics in *almost all*
 distributions of these V→leptons samples, **`ptl1_bias` with its default
@@ -300,6 +315,9 @@ budget, and it preserves the total cross section and the physical
 distributions. Combined modules (`ptl1_met_bias`) only become useful when
 the observables decouple — i.e. once jets/recoil are present — and must
 then be run with moderate exponents (effective total power ≲ 4).
+`xsec_flat_bias` is technically the most robust module (perfect σ
+stability, 100% unweighting efficiency) but does not redistribute
+statistics at all, so it does not help the tails.
 
 ## References
 
