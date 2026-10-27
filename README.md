@@ -263,10 +263,11 @@ Event counts N and per-bin relative statistical uncertainty
 | 800 GeV | 116 / 0.093 / – | 21 564 / 0.008 / **11.0×** | 93 280 / 0.010 / 9.7× | 132 / 0.103 / 0.9× |
 
 Plots (top: physical weighted distributions — closure; middle: unweighted
-population; bottom: δ_biased/δ_ref): [z_ptl1](study/plots/z_ptl1.png),
-[z_ptl2](study/plots/z_ptl2.png), [z_ht](study/plots/z_ht.png),
-[w_ptl1](study/plots/w_ptl1.png), [w_met](study/plots/w_met.png),
-[w_ht](study/plots/w_ht.png).
+population; bottom: δ_biased/δ_ref):
+
+<img src="study/plots/z_ptl1.png" alt="z_ptl1" width="32%" /> <img src="study/plots/z_ptl2.png" alt="z_ptl2" width="32%" /> <img src="study/plots/z_ht.png" alt="z_ht" width="32%" />
+
+<img src="study/plots/w_ptl1.png" alt="w_ptl1" width="32%" /> <img src="study/plots/w_met.png" alt="w_met" width="32%" /> <img src="study/plots/w_ht.png" alt="w_ht" width="32%" />
 
 Findings:
 
